@@ -1,10 +1,8 @@
-from flask import Flask
-from flask import render_template
-from flask import request
-import pusher
+from flask import Flask, render_template, request
 import mysql.connector
 import datetime
 import pytz
+import pusher
 
 # Conexión a la base de datos
 con = mysql.connector.connect(
@@ -18,26 +16,36 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    con.close()
     return render_template("app.html")
 
-# Ruta GET para mostrar la vista de alumnos
+# Ejemplo de ruta GET usando templates para mostrar una vista
 @app.route("/alumnos")
 def alumnos():
-    con.close()
     return render_template("alumnos.html")
 
-# Ruta POST para guardar un alumno en la base de datos
-@app.route("/alumnos/guardar", methods=["POST"])
-def alumnosGuardar():
-    con.close()
-    matricula = request.form["txtMatriculaFA"]
-    nombreapellido = request.form["txtNombreApellidoFA"]
-    return f"Matrícula {matricula} Nombre y Apellido {nombreapellido}"
+# Ejemplo de ruta POST para guardar información en la tabla tst0_reservas
+@app.route("/reservas/guardar", methods=["POST"])
+def reservasGuardar():
+    nombre_apellido = request.form["txtNombreApellido"]
+    telefono = request.form["txtTelefono"]
 
-# Ruta para buscar registros de la tabla 'tst0_reservas'
-@app.route("/buscar")
-def buscar():
+    if not con.is_connected():
+        con.reconnect()
+
+    cursor = con.cursor()
+    sql = "INSERT INTO tst0_reservas (Nombre_Apellido, Telefono, Fecha) VALUES (%s, %s, %s)"
+    fecha = datetime.datetime.now(pytz.timezone("America/Matamoros"))
+    val = (nombre_apellido, telefono, fecha)
+    cursor.execute(sql, val)
+    con.commit()
+    
+    con.close()
+
+    return f"Reserva guardada: Nombre y Apellido {nombre_apellido}, Teléfono {telefono}, Fecha {fecha}"
+
+# Código usado en las prácticas para buscar reservas
+@app.route("/reservas/buscar")
+def reservasBuscar():
     if not con.is_connected():
         con.reconnect()
 
@@ -46,34 +54,9 @@ def buscar():
     registros = cursor.fetchall()
 
     con.close()
+
     return registros
 
-# Ruta para registrar un nuevo valor en la tabla 'tst0_reservas'
-@app.route("/registrar", methods=["GET"])
-def registrar():
-    args = request.args
-
-    if not con.is_connected():
-        con.reconnect()
-
-    cursor = con.cursor()
-
-    sql = "INSERT INTO tst0_reservas (Nombre_Apellido, Telefono, Fecha) VALUES (%s, %s, %s)"
-    val = (args["nombre_apellido"], args["telefono"], datetime.datetime.now(pytz.timezone("America/Matamoros")))
-    cursor.execute(sql, val)
-    
-    con.commit()
-    con.close()
-
-    pusher_client = pusher.Pusher(
-        app_id="1714541",
-        key="cda1cc599395d699a2af",
-        secret="9e9c00fc36600060d9e2",
-        cluster="us2",
-        ssl=True
-    )
-
-    pusher_client.trigger("canalReservas", "nuevaReserva", args)
-
-    return args
+if __name__ == "__main__":
+    app.run(debug=True)
 
