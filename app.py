@@ -14,11 +14,11 @@ con = mysql.connector.connect(
 
 # Configuración de Pusher
 pusher_client = pusher.Pusher(
-    app_id='YOUR_APP_ID',
-    key='YOUR_APP_KEY',
-    secret='YOUR_APP_SECRET',
-    cluster='YOUR_APP_CLUSTER',
-    ssl=True
+    app_id='1768024',
+    key='25ef14f3e9a47c712e61',
+    secret='31c5ddebc75a9419e7d2',
+    cluster='us2',
+     ssl=True
 )
 
 app = Flask(__name__)
