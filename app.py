@@ -12,18 +12,25 @@ con = mysql.connector.connect(
     password="dJ0CIAFF="
 )
 
+# Configuración de Pusher
+pusher_client = pusher.Pusher(
+    app_id='YOUR_APP_ID',
+    key='YOUR_APP_KEY',
+    secret='YOUR_APP_SECRET',
+    cluster='YOUR_APP_CLUSTER',
+    ssl=True
+)
+
 app = Flask(__name__)
 
 @app.route("/")
 def index():
     return render_template("app.html")
 
-# Ejemplo de ruta GET usando templates para mostrar una vista
 @app.route("/alumnos")
 def alumnos():
     return render_template("alumnos.html")
 
-# Ejemplo de ruta POST para guardar información en la tabla tst0_reservas
 @app.route("/reservas/guardar", methods=["POST"])
 def reservasGuardar():
     nombre_apellido = request.form["txtNombreApellido"]
@@ -39,11 +46,17 @@ def reservasGuardar():
     cursor.execute(sql, val)
     con.commit()
     
+    # Emitir un evento de Pusher
+    pusher_client.trigger('reservas-channel', 'nueva-reserva', {
+        'nombre_apellido': nombre_apellido,
+        'telefono': telefono,
+        'fecha': fecha.strftime("%Y-%m-%d %H:%M:%S")
+    })
+
     con.close()
 
     return f"Reserva guardada: Nombre y Apellido {nombre_apellido}, Teléfono {telefono}, Fecha {fecha}"
 
-# Código usado en las prácticas para buscar reservas
 @app.route("/reservas/buscar")
 def reservasBuscar():
     if not con.is_connected():
@@ -59,4 +72,3 @@ def reservasBuscar():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
