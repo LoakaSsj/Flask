@@ -58,6 +58,10 @@
                 $.post("/reservas/guardar", $(this).serialize(), function(respuesta) {
                     alert(respuesta);
                     buscarReservas(); // Actualiza la lista de reservas
+                    
+                    // Limpiar los campos de entrada después de agregar la reserva
+                    $("#txtNombreApellido").val('');
+                    $("#txtTelefono").val('');
                 });
             });
 
