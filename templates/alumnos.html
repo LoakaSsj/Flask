@@ -1,97 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
-  <title>Reservas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <title>Reservas</title>
 </head>
 <body>
-  <div class="container">
-    <h1>Reservas</h1>
-    <form id="formReservas">
-      <input type="hidden" id="reservaId" name="reservaId"> <div class="mb-3">
-        <label for="txtNombreApellido" class="form-label">Nombre y Apellido</label>
-        <input type="text" class="form-control" id="txtNombreApellido" name="txtNombreApellido" required>
-      </div>
-      <div class="mb-3">
-        <label for="txtTelefono" class="form-label">Teléfono</label>
-        <input type="text" class="form-control" id="txtTelefono" name="txtTelefono" required>
-      </div>
-      <div class="d-flex justify-content-between">
-        <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
-        <button type="button" class="btn btn-danger" id="btnEliminar" disabled>Eliminar</button>
-        <button type="button" class="btn btn-secondary" id="btnEditar" disabled>Editar</button>
-      </div>
-    </form>
-
-    <h2>Lista de Reservas</h2>
-    <table class="table table-sm">
-      <thead>
-        <tr>
-          <th>Nombre y Apellido</th>
-          <th>Teléfono</th>
-          <th>Fecha</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="tbodyReservas"></tbody>
-    </table>
-  </div>
-  <script>
-    $(document).ready(function() {
-      // Fetch initial data on page load
-      fetchReservas();
-
-      // Handle form submission (Create & Update)
-      $('#formReservas').submit(function(event) {
-        event.preventDefault();
-        const nombreApellido = $('#txtNombreApellido').val();
-        const telefono = $('#txtTelefono').val();
-        const reservaId = $('#reservaId').val() || null; // Check for update
-
-        // Handle create or update based on reservaId
-        if (reservaId) {
-          updateReserva(reservaId, nombreApellido, telefono);
-        } else {
-          createReserva(nombreApellido, telefono);
-        }
-      });
-
-      // Handle Delete button click
-      $('#btnEliminar').click(function() {
-        const reservaId = $('#reservaId').val();
-        if (reservaId) {
-          deleteReserva(reservaId);
-        }
-      });
-
-      // Handle Edit button click (enable editing)
-      $('#btnEditar').click(function() {
-        const reservaId = $('#reservaId').val();
-        if (reservaId) {
-          // Enable form fields and populate with existing data (needs implementation)
-          $('#txtNombreApellido').prop('disabled', false);
-          $('#txtTelefono').prop('disabled', false);
-          // Fetch reserva details for pre-population
-          fetchReservaDetails(reservaId);
-        }
-      });
-    });
-
-    // Implement functions for create, update, delete, and fetch details (replace placeholders)
-    function createReserva(nombreApellido, telefono) {
-      // Send AJAX request to /reservas/guardar with POST method
-      $.ajax({
-        url: '/reservas/guardar',
-        method: 'POST',
-        data: { txtNombreApellido: nombreApellido, txtTelefono: telefono },
-        success: function(response) {
-          console.log(response);
-          fetchReservas(); // Refresh table after successful creation
-          clearForm(); // Clear form fields after creation
-        },
-        error:
+    <div class="container">
+        <h1>Reservas</h1>
+        <form id="formReservas">
+            <input type="hidden" id="reservaId" name="reservaId">
+            <div class="mb-3">
+                <label for="txtNombreApellido" class="form-label">Nombre y Apellido</label>
+                <input type="text" class="form-control" id="txtNombreApellido" name="txtNombreApellido" required>
+            </div>
+            <div class="mb-3">
+                <label for="txtTelefono" class="form-label">Teléfono</label>
+                <input type="text" class="form-control" id="txtTelefono" name="txtTelefono" required>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                <button type="button" class="btn btn-danger" id="btnEliminar" disabled>Eliminar</button>
+            </div>
+        </form>
+        <h2>Lista de Reservas</h2>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Nombre y Apellido</th>
+                    <th>Teléfono</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyReservas"></tbody>
+        </table>
+    </div>
+   
    
