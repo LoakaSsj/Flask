@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
+</head>
+<body>
+    <h1>Lista de Usuarios</h1>
+    <ul>
+        {% for usuario in usuarios %}
+        <li>{{ usuario[1] }} - {{ usuario[2] }}</li>
+        {% endfor %}
+    </ul>
+
+    <form action="/usuarios/guardar" method="POST">
+        <input type="text" name="txtUsuarioFA" placeholder="Usuario" required>
+        <input type="password" name="txtContrasenaFA" placeholder="Contraseña" required>
+        <button type="submit">Guardar Usuario</button>
+    </form>
+</body>
+</html>
+
