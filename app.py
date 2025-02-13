@@ -3,6 +3,7 @@ from controllers.user_controller import user_routes
 
 app = Flask(__name__)
 
+
 # Registrar las rutas de usuarios
 app.register_blueprint(user_routes)
 
