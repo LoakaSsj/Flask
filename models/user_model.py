@@ -1,5 +1,6 @@
 import mysql.connector
 
+
 class UserModel:
     def __init__(self):
         self.con = mysql.connector.connect(
